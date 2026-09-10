@@ -9,6 +9,13 @@ import { nitro } from 'nitro/vite'
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
+  worker: { format: 'es' },
+  optimizeDeps: {
+    // Vite's dependency pre-bundling mangles maplibre-gl's worker bundle,
+    // causing "disallowed MIME type" / corrupted content errors in the
+    // browser. Excluding it forces Vite to serve it unbundled instead.
+    exclude: ['maplibre-gl'],
+  },
   plugins: [
     devtools(),
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
